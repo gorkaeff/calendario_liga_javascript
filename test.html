@@ -104,11 +104,22 @@
 				return html;
 			}
 			
+			function crearEquipos() {
+				var equipos = prompt("¿De cuantos equipos es la liga? Mayor que 6 y par, por favor", 20);
+				if (equipos % 2 == 0 && equipos > 6){
+					var arrayEquipos = [];
+					for (var i=1;i<=equipos;i++){
+						var auxTeam = prompt("Introduzca equipo " + i);
+						arrayEquipos.push(auxTeam);
+					}
+					return arrayEquipos;
+				} else {
+					alert("Debe ser un numero superior a 6 y par, por favor")
+				}
+			}
+			
 			//Asignar equipos
-			var equipos = ["Osasuna", "Eibar", "Alaves", "Athletic", "Barcelona", "Real Madrid", 
-						"Sevilla", "Atletico de Madrid", "Real Sociedad", "Villareal",
-						"Leganes", "Granada", "Deportivo", "Celta", "Sporting", "Espanyol", 
-						"Malaga", "Betis", "Valencia", "Las Palmas"];
+			var equipos = crearEquipos();
 			//Jornadas Total de la ida
 			var jornadasTotal = [];
 			//Variable donde se almacenan los arrays de la ida y de la vuelta
