@@ -1,0 +1,132 @@
+<!DOCTYPE HTML> 
+<html>
+	<head>
+		<title>test.js</title>
+	</head>
+	<body>
+		<h1>PRIMERA VUELTA</h1>
+		<div id="ida"></div>
+		<h1>SEGUNDA VUELTA</h1>
+		<div id="vuelta"></div>
+		<script>
+		
+			//funcion que desordena el array para generar la jornada base inicial
+			function shuffle(array) {
+				let counter = array.length;
+				while (counter > 0) {
+					let index = Math.floor(Math.random() * counter);
+					counter--;
+					let temp = array[counter];
+					array[counter] = array[index];
+					array[index] = temp;
+				}
+				return array;
+			}
+			
+			//funcionamiento de calculo si es jornada par
+			function crearJornadaPar(arrayBase){
+				var arrAux = [];
+				var longitudArrayBase = arrayBase.length;
+				for (var i=0; i<longitudArrayBase; i++){
+					if (i % 2 == 0){
+						arrAux[i+1] = arrayBase[i];
+					} else {
+						if (i == 1){
+							arrAux[longitudArrayBase - 2] = arrayBase[i];
+						} else {
+							arrAux[i-3] = arrayBase[i];
+						}
+					}
+				}
+				return arrAux;
+			}
+			
+			//funcionamiento si es una jornada impar
+			function crearJornadaImpar(arrayBase){
+				var arrAux = [];
+				var longitudArrayBase = arrayBase.length;
+				for (var i=0; i<longitudArrayBase; i++){
+					if (i == 0 || i == longitudArrayBase - 1 || i == longitudArrayBase){
+						if (i == 0 || i == longitudArrayBase){
+							arrAux[i] = arrayBase[i];
+						} else if (i == longitudArrayBase - 1){
+							arrAux[1] = arrayBase[longitudArrayBase - 1];
+						}
+					} else {
+						arrAux[i+1] = arrayBase[i];
+					}
+				}
+				return arrAux;
+			}
+			
+			// generar el calendario de ida a partir de una jornada tomada como base
+			function generarCalendario(jornadasTotal, jornadaBase){
+				jornadasTotal.push(jornadaBase);
+				for(var i=2;i<jornadaBase.length;i++){
+					if (i % 2 == 0){
+						var jornadaAuxPar = crearJornadaPar(jornadaBase);
+						jornadasTotal.push(jornadaAuxPar);
+						jornadaBase = jornadaAuxPar;
+					} else {
+						var jornadaAuxImpar = crearJornadaImpar(jornadaBase);
+						jornadasTotal.push(jornadaAuxImpar);
+						jornadaBase = jornadaAuxImpar;
+					}
+				}
+				return jornadasTotal;
+			}
+			
+			//A traves del calendario de ida, hacer un reverse para obtener el array de la segunda vuelta
+			function generarCalendarioVuelta(calendarioIda){
+				var calArr = [];
+				for (var i=0; i<calendarioIda.length;i++){
+					var aux = calendarioIda[i].reverse()
+					calArr[i] = aux;
+				}
+				return calArr;
+			}
+			
+			
+			//Pintar los equipos con un string con HTML
+			function pintarJornadasHTML (arr, idaVuelta){
+				var html = "";
+				var jornadas = arr.length;
+				for (var i=0; i<jornadas; i++){
+					var equipos = arr[i].length;
+					var jor = idaVuelta == 2 ? jornadas + i + 1: i+1;
+					html += "<h1> JORNADA " + jor + "</h1>";
+					for (var j=0; j<equipos; j++){
+						html += arr[i][j] + " - " + arr[i][j+1] + "</br>";
+						j++;
+					}
+					html += "<hr>";
+				}
+				return html;
+			}
+			
+			//Asignar equipos
+			var equipos = ["Osasuna", "Eibar", "Alaves", "Athletic", "Barcelona", "Real Madrid", 
+						"Sevilla", "Atletico de Madrid", "Real Sociedad", "Villareal",
+						"Leganes", "Granada", "Deportivo", "Celta", "Sporting", "Espanyol", 
+						"Malaga", "Betis", "Valencia", "Las Palmas"];
+			//Jornadas Total de la ida
+			var jornadasTotal = [];
+			//Variable donde se almacenan los arrays de la ida y de la vuelta
+			var calendarioFinal = [];
+			//Genero aleatoriamente la primera jornada que me sirve como base segun los "equipos insertados (siempre par)"
+			var jornadaBase = shuffle(equipos);
+			
+			//Genero el calendario de la ida
+			var arrayCalendarioIda = generarCalendario(jornadasTotal, jornadaBase);
+			document.getElementById("ida").innerHTML = pintarJornadasHTML(arrayCalendarioIda, 1);
+			//Agregamos ida
+			calendarioFinal.push(arrayCalendarioIda);
+			
+			//Genero calendario de vuelta
+			var arrayCalendarioVuelta = generarCalendarioVuelta(arrayCalendarioIda);
+			document.getElementById("vuelta").innerHTML = pintarJornadasHTML(arrayCalendarioVuelta, 2);
+			//Agregamos vuelta
+			calendarioFinal.push(arrayCalendarioVuelta);
+		</script>
+	</body>
+</html>
